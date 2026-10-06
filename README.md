@@ -3,7 +3,18 @@
 [![License](https://img.shields.io/github/license/gomuks/gomuks.svg)](LICENSE)
 [![Release](https://img.shields.io/github/release/gomuks/gomuks/all.svg)](https://github.com/gomuks/gomuks/releases)
 [![GitLab CI](https://mau.dev/gomuks/gomuks/badges/main/pipeline.svg)](https://mau.dev/gomuks/gomuks/pipelines)
+---
+## Systemd service
+A setup for running the software via systemd can be found in the service-setup folder
+You can launch gomuks via the install script here.
+https://raw.githubusercontent.com/Doty1154/gomuks/refs/heads/main/service-setup/install.sh
 
+
+```
+wget https://raw.githubusercontent.com/Doty1154/gomuks/raw/refs/heads/main/service-setup/install.sh
+bash ./install.sh
+```
+---
 A Matrix client written in Go using [mautrix-go](https://github.com/mautrix/go).
 
 gomuks is split into a backend and various frontends. The backend can either be
