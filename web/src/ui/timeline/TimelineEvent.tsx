@@ -32,6 +32,8 @@ import { useHorizontalSwipe } from "../util/swipe.ts"
 import EventReactions from "./EventReactions.tsx"
 import ReadReceipts from "./ReadReceipts.tsx"
 import { ReplyBody, ReplyIDBody } from "./ReplyBody.tsx"
+// From https://github.com/gomuks/gomuks/pull/623
+//import { ContentErrorBoundary, HiddenEvent, getBodyType, getPerMessageProfile, isSmallEvent, ACLBody, PowerLevelBody, RoomAvatarBody, RoomNameBody, PolicyRuleBody } from "./content"
 import { ContentErrorBoundary, HiddenEvent, getBodyType, getPerMessageProfile, isSmallEvent } from "./content"
 import ErrorIcon from "@/icons/error.svg?react"
 import PendingIcon from "@/icons/pending.svg?react"
@@ -190,6 +192,8 @@ const TimelineEvent = ({
 	if (evt.type === "m.room.member") {
 		wrapperClassNames.push("membership-event")
 	}
+    // Also from https://github.com/gomuks/gomuks/pull/623
+    // if (BodyType === HiddenEvent || BodyType === ACLBody || BodyType === PowerLevelBody || BodyType === RoomAvatarBody || BodyType === RoomNameBody || BodyType === PolicyRuleBody) { 
 	if (BodyType === HiddenEvent) {
 		wrapperClassNames.push("hidden-event")
 	}
