@@ -1,6 +1,5 @@
 #!/bin/bash
 #package-manager install git zip fakeroot
-set -o errexit
 set -o pipefail
 # Parse options
 clean=false
@@ -31,11 +30,13 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-
 mkdir --parents --verbose .cache
 export GOPATH="$PWD/.cache"
 export GOCACHE="$PWD/.cache/build"
 #export MAU_STATIC_BUILD=true
+
+set -o errexit
+
 go run ./cmd/rpcdocgen -o rpc.html
 cd web
 go run ../pkg/hicli/cmdspec/print src/api/types/stdcommands.json src/api/types/stdcommands.d.ts
@@ -56,3 +57,5 @@ npm approve-scripts --all
 npm run make --
 npm approve-scripts --allow-scripts-pending
 cd ..
+cp --recursive --verbose --update=all --no-target-directory --force ./desktop/out/gomuks-desktop-* ~/gomuks-desktop
+chmod +x --verbose  --recursive ~/gomuks-desktop
