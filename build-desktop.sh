@@ -41,19 +41,19 @@ go run ./cmd/rpcdocgen -o rpc.html
 cd web
 go run ../pkg/hicli/cmdspec/print src/api/types/stdcommands.json src/api/types/stdcommands.d.ts
 ./build-wasm.sh
-npm approve-scripts --all
-npm clean-install --include=dev
-npm approve-scripts --all
-npm clean-install --include=dev
+npm approve-scripts --all --allow-git=all
+npm clean-install --include=dev --allow-git=all
+npm approve-scripts --all --allow-git=all
+npm clean-install --include=dev --allow-git=all
 npm run build
 cd ..
 mkdir -p web/dist/_gomuks/codeblock
 go run ./cmd/chromagen web/dist/_gomuks/codeblock/
 ./build-noweb.sh
 cd desktop
-npm approve-scripts --all
-npm ci --include=dev
-npm approve-scripts --all
+npm approve-scripts --all --allow-git=all
+npm ci --include=dev --allow-git=all
+npm approve-scripts --all --allow-git=all
 npm run make --
 npm approve-scripts --allow-scripts-pending
 cd ..
