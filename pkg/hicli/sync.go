@@ -353,9 +353,6 @@ func (h *HiClient) receiptsToList(content *event.ReceiptEventContent) ([]*databa
 				if userID == h.Account.UserID {
 					newOwnReceipts = append(newOwnReceipts, eventID)
 				}
-				if receiptInfo.ThreadID == event.ReadReceiptThreadMain {
-					receiptInfo.ThreadID = ""
-				}
 				receiptList = append(receiptList, &database.Receipt{
 					UserID:      userID,
 					ReceiptType: receiptType,
@@ -607,7 +604,13 @@ func (h *HiClient) cacheMedia(ctx context.Context, evt *event.Event, rowID datab
 			h.addMediaCache(ctx, rowID, content.Info.ThumbnailURL, nil, content.Info.ThumbnailInfo, "")
 		}
 
-		for _, image := range content.BeeperGalleryImages {
+		for _, image := range content.GalleryItems {
+			h.cacheMedia(ctx, &event.Event{
+				Type:    event.EventMessage,
+				Content: event.Content{Parsed: image},
+			}, rowID)
+		}
+		for _, image := range content.UnstableGalleryItems {
 			h.cacheMedia(ctx, &event.Event{
 				Type:    event.EventMessage,
 				Content: event.Content{Parsed: image},
@@ -663,7 +666,7 @@ func (h *HiClient) generatePreviewText(content *event.MessageEventContent) strin
 	if content.MsgType.IsText() && text == "" {
 		text = "<empty message>"
 	}
-	if content.MsgType.IsMedia() && (text == "" || content.FileName == "" || content.FileName == content.Body) {
+	if text == "" || content.FileName == "" || content.FileName == content.Body {
 		switch content.MsgType {
 		case event.MsgImage:
 			text = "Sent an image"
@@ -680,6 +683,8 @@ func (h *HiClient) generatePreviewText(content *event.MessageEventContent) strin
 			if content.GetFileName() != "" && len(content.GetFileName()) < 100 {
 				text += ": " + content.GetFileName()
 			}
+		case event.MsgUnstableGallery:
+			text = "Sent a gallery"
 		}
 	}
 	return text
@@ -855,7 +860,7 @@ func (h *HiClient) processEvent(
 				return fmt.Errorf("failed to process edit %s of event %s: %w", latestEdit.ID, evt.ID, err)
 			} else if dbEdit != nil {
 				dbEvt.LastEditRef = dbEdit
-				dbEvt.LastEditRowID = &dbEdit.RowID
+				dbEvt.LastEditRowID = dbEdit.RowID
 				err = h.DB.Event.UpdateLastEdit(ctx, dbEvt, dbEdit)
 				if err != nil {
 					return fmt.Errorf("failed to update last edit for event %s: %w", dbEvt.ID, err)
